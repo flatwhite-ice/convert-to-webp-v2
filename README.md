@@ -43,7 +43,17 @@
 
 ### 방법 A. 배포 파일로 바로 실행 (가장 쉬움 — 권장)
 
-전달받은 압축 파일(`convert-to-webp2-<OS>.zip`)을 사용하는 방법입니다. 별도 설치가 필요 없습니다.
+아래에서 사용하는 OS에 맞는 압축 파일을 내려받으세요. 별도 설치가 필요 없습니다.
+
+| 운영체제 | 다운로드 | 용량 |
+|---------|---------|------|
+| 🪟 **Windows** | [convert-to-webp2-windows.zip](https://github.com/flatwhite-ice/convert-to-webp-v2/raw/main/dist/convert-to-webp2-windows.zip) | 약 57MB |
+| 🍎 **macOS** | [convert-to-webp2-macos.zip](https://github.com/flatwhite-ice/convert-to-webp-v2/raw/main/dist/convert-to-webp2-macos.zip) | 약 81MB |
+
+> 위 링크를 누르면 곧바로 다운로드가 시작됩니다. (GitHub 저장소에 포함된 최신 빌드본)
+> 저장소에서 직접 받으려면 [`dist/` 폴더](https://github.com/flatwhite-ice/convert-to-webp-v2/tree/main/dist)를 확인하세요.
+
+다운로드한 압축 파일로 실행하는 방법은 아래 OS별 안내를 따르세요.
 
 #### 🪟 Windows
 1. `convert-to-webp2-windows.zip`의 압축을 풉니다.
@@ -61,8 +71,7 @@
    *(또는 `시스템 설정 → 개인정보 보호 및 보안`에서 실행을 허용합니다.)*
 
 #### 🐧 Linux
-1. 압축을 풉니다.
-2. 폴더 안의 **`convert-to-webp2`** 실행 파일을 실행합니다. (터미널: `./convert-to-webp2`)
+Linux용 사전 빌드본은 제공되지 않습니다. 아래 **방법 B(소스에서 직접 빌드)** 로 만들어 사용하세요. 빌드 후 `dist/convert-to-webp2-linux/` 폴더의 **`convert-to-webp2`** 실행 파일을 실행하면 됩니다. (터미널: `./convert-to-webp2`)
 
 ---
 
