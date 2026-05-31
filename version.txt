@@ -1,0 +1,29 @@
+# PyInstaller Windows 버전 리소스. build.py가 --version-file 로 사용한다.
+# 배포 전 CompanyName / 버전 등을 환경에 맞게 수정하세요.
+VSVersionInfo(
+  ffi=FixedFileInfo(
+    filevers=(1, 0, 0, 0),
+    prodvers=(1, 0, 0, 0),
+    mask=0x3f,
+    flags=0x0,
+    OS=0x40004,
+    fileType=0x1,
+    subtype=0x0,
+    date=(0, 0)
+  ),
+  kids=[
+    StringFileInfo([
+      StringTable('040904B0', [
+        StringStruct('CompanyName', 'convert-to-webp2'),
+        StringStruct('FileDescription', 'JPG/JPEG to WebP Converter'),
+        StringStruct('FileVersion', '1.0.0.0'),
+        StringStruct('InternalName', 'convert-to-webp2'),
+        StringStruct('LegalCopyright', ''),
+        StringStruct('OriginalFilename', 'convert-to-webp2.exe'),
+        StringStruct('ProductName', 'JPG to WebP Converter'),
+        StringStruct('ProductVersion', '1.0.0.0')
+      ])
+    ]),
+    VarFileInfo([VarStruct('Translation', [0x0409, 1200])])
+  ]
+)

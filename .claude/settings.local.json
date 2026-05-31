@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \"import PIL; print\\('Pillow', PIL.__version__\\)\")",
+      "Bash(python3 -c \"import piexif; print\\('piexif ok'\\)\")",
+      "Bash(python3 -c \"import PySide6; print\\('PySide6', PySide6.__version__\\)\")",
+      "Bash(python3 -m venv .venv)",
+      "Bash(.venv/bin/pip install *)",
+      "Bash(.venv/bin/python -c \"import PIL, piexif; print\\('PIL', PIL.__version__, '| piexif ok'\\)\")",
+      "Bash(python3 -m py_compile app.py converter.py build.py)",
+      "Bash(chmod +x build.sh)",
+      "Bash(bash -n build.sh)",
+      "Bash(python3 -m py_compile app.py)",
+      "Bash(python3 -m py_compile app.py build.py)"
+    ]
+  }
+}
