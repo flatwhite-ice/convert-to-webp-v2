@@ -6,7 +6,7 @@
     python build.py
 
 결과:
-    dist/convert-to-webp2/            실행 폴더 (exe + _internal/ 라이브러리)
+    dist/convert-to-webp2-<os>/       실행 폴더 (exe + _internal/ 라이브러리, OS별 구분)
     dist/convert-to-webp2-<os>.zip    배포용 압축본
 
 onedir 방식은 자가압축해제가 없어 시작이 빠르고 백신/SmartScreen 휴리스틱에
@@ -55,6 +55,14 @@ def _build_options(root: Path) -> list[str]:
 
 
 def main() -> int:
+    if sys.version_info < (3, 10):
+        print(
+            f"오류: Python 3.10 이상이 필요합니다. 현재: {sys.version.split()[0]}",
+            file=sys.stderr,
+        )
+        print("  PySide6 6.6+ 는 Python 3.9 를 지원하지 않습니다.", file=sys.stderr)
+        return 1
+
     root = Path(__file__).resolve().parent
     entry = root / ENTRY
     if not entry.exists():
@@ -74,18 +82,26 @@ def main() -> int:
     if result.returncode != 0:
         return result.returncode
 
-    bundle = root / "dist" / APP_NAME
-    if not bundle.is_dir():
-        print(f"경고: 빌드 폴더 {bundle} 를 찾지 못해 압축을 건너뜁니다.", file=sys.stderr)
+    tag = _platform_tag()
+    src_bundle = root / "dist" / APP_NAME              # PyInstaller 출력 (exe 이름 유지)
+    final_bundle = root / "dist" / f"{APP_NAME}-{tag}"  # 최종 폴더 (OS 접미사)
+
+    if not src_bundle.is_dir():
+        print(f"경고: 빌드 폴더 {src_bundle} 를 찾지 못해 압축을 건너뜁니다.", file=sys.stderr)
         return 0
 
-    # dist/convert-to-webp2/ 폴더를 통째로 zip → 풀면 동일 폴더 구조 유지
-    zip_base = root / "dist" / f"{APP_NAME}-{_platform_tag()}"
+    # OS 접미사 폴더로 이름 변경 (이전 빌드 잔여물은 제거 후 대체)
+    if final_bundle.exists():
+        shutil.rmtree(final_bundle)
+    src_bundle.rename(final_bundle)
+
+    # dist/convert-to-webp2-<os>/ 폴더를 통째로 zip → 풀면 동일 폴더 구조 유지
     archive = shutil.make_archive(
-        str(zip_base), "zip", root_dir=bundle.parent, base_dir=APP_NAME
+        str(final_bundle), "zip",
+        root_dir=final_bundle.parent, base_dir=final_bundle.name,
     )
     print("\n빌드 완료")
-    print(f"  실행 폴더 → {bundle}")
+    print(f"  실행 폴더 → {final_bundle}")
     print(f"  배포 zip  → {archive}")
     return 0
 

@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['C:\\Users\\laugh\\dev\\personal\\util-tools\\convert-to-webp2\\app.py'],
+    ['/Users/flatwhite/dev/convert-to-webp-v2/app.py'],
     pathex=[],
     binaries=[],
     datas=[],
@@ -32,7 +32,6 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    version='C:\\Users\\laugh\\dev\\personal\\util-tools\\convert-to-webp2\\version.txt',
 )
 coll = COLLECT(
     exe,
@@ -42,4 +41,10 @@ coll = COLLECT(
     upx=False,
     upx_exclude=[],
     name='convert-to-webp2',
+)
+app = BUNDLE(
+    coll,
+    name='convert-to-webp2.app',
+    icon=None,
+    bundle_identifier=None,
 )

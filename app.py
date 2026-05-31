@@ -9,9 +9,11 @@ import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-from PySide6.QtCore import Qt, QThread, Signal
+from PySide6.QtCore import Qt, QThread, QUrl, Signal
+from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import (
     QApplication,
+    QButtonGroup,
     QCheckBox,
     QFileDialog,
     QHBoxLayout,
@@ -22,6 +24,7 @@ from PySide6.QtWidgets import (
     QPlainTextEdit,
     QProgressBar,
     QPushButton,
+    QRadioButton,
     QSpinBox,
     QVBoxLayout,
     QWidget,
@@ -46,13 +49,19 @@ class Worker(QThread):
     fatalError = Signal(str)
 
     def __init__(
-        self, target: Path, files: list[Path], max_dim: int | None, workers: int
+        self,
+        target: Path,
+        files: list[Path],
+        max_dim: int | None,
+        workers: int,
+        resize_after_convert: bool = False,
     ) -> None:
         super().__init__()
         self._target = target
         self._files = files
         self._max_dim = max_dim
         self._workers = workers
+        self._resize_after = resize_after_convert
         self._cancel = threading.Event()
 
     def cancel(self) -> None:
@@ -73,7 +82,7 @@ class Worker(QThread):
 
         with ThreadPoolExecutor(max_workers=self._workers) as ex:
             futures = {
-                ex.submit(convert_one, f, out_dir, self._max_dim): f
+                ex.submit(convert_one, f, out_dir, self._max_dim, self._resize_after): f
                 for f in self._files
             }
             for fut in as_completed(futures):
@@ -139,6 +148,21 @@ class MainWindow(QMainWindow):
         res_row.addStretch(1)
         root.addLayout(res_row)
 
+        # --- 변환/리사이즈 순서 (해상도 지정 시에만 활성화) ---
+        order_row = QHBoxLayout()
+        self._resize_first_radio = QRadioButton("리사이즈 후 변환 (기본·빠름)")
+        self._convert_first_radio = QRadioButton("변환 후 리사이즈")
+        self._resize_first_radio.setChecked(True)
+        self._order_group = QButtonGroup(self)
+        self._order_group.addButton(self._resize_first_radio)
+        self._order_group.addButton(self._convert_first_radio)
+        self._resize_first_radio.setEnabled(False)
+        self._convert_first_radio.setEnabled(False)
+        order_row.addWidget(self._resize_first_radio)
+        order_row.addWidget(self._convert_first_radio)
+        order_row.addStretch(1)
+        root.addLayout(order_row)
+
         # --- 실행 버튼 ---
         btn_row = QHBoxLayout()
         self._start_btn = QPushButton("변환 시작")
@@ -183,6 +207,8 @@ class MainWindow(QMainWindow):
 
     def _on_limit_toggled(self, checked: bool) -> None:
         self._dim_spin.setEnabled(checked)
+        self._resize_first_radio.setEnabled(checked)
+        self._convert_first_radio.setEnabled(checked)
 
     # ------------------------------------------------------------------
     # 변환 실행 / 취소
@@ -192,6 +218,9 @@ class MainWindow(QMainWindow):
         if not self._target or not self._files:
             return
         max_dim = self._dim_spin.value() if self._limit_check.isChecked() else None
+        resize_after = (
+            self._limit_check.isChecked() and self._convert_first_radio.isChecked()
+        )
         workers = min(MAX_WORKERS, os.cpu_count() or MAX_WORKERS)
 
         self._progress.setMaximum(len(self._files))
@@ -199,7 +228,9 @@ class MainWindow(QMainWindow):
         self._log.clear()
         self._set_running(True)
 
-        self._worker = Worker(self._target, self._files, max_dim, workers)
+        self._worker = Worker(
+            self._target, self._files, max_dim, workers, resize_after
+        )
         self._worker.progress.connect(self._on_progress)
         self._worker.fileDone.connect(self._on_file_done)
         self._worker.finishedAll.connect(self._on_finished)
@@ -234,11 +265,21 @@ class MainWindow(QMainWindow):
         verb = "취소됨" if cancelled else "완료"
         out = self._target / "webp" if self._target else Path("webp")
         self._status_label.setText(f"{verb}: 전체 {total}개 중 {converted}개 변환 완료")
-        QMessageBox.information(
+
+        msg = (
+            f"전체 {total}개 중 {converted}개 변환 완료\n"
+            f"저장 위치: {out}\n\n"
+            "폴더를 열까요?"
+        )
+        answer = QMessageBox.question(
             self,
             verb,
-            f"전체 {total}개 중 {converted}개 변환 완료\n저장 위치: {out}",
+            msg,
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.Yes,
         )
+        if answer == QMessageBox.StandardButton.Yes and out.exists():
+            QDesktopServices.openUrl(QUrl.fromLocalFile(str(out)))
 
     def _on_fatal(self, message: str) -> None:
         self._set_running(False)
@@ -254,6 +295,9 @@ class MainWindow(QMainWindow):
         self._start_btn.setEnabled(not running and bool(self._files))
         self._limit_check.setEnabled(not running)
         self._dim_spin.setEnabled(not running and self._limit_check.isChecked())
+        order_enabled = not running and self._limit_check.isChecked()
+        self._resize_first_radio.setEnabled(order_enabled)
+        self._convert_first_radio.setEnabled(order_enabled)
         self._cancel_btn.setEnabled(running)
 
     def closeEvent(self, event) -> None:  # noqa: N802 — Qt 시그니처
