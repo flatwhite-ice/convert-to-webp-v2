@@ -47,8 +47,8 @@
 
 | 운영체제 | 다운로드 | 용량 |
 |---------|---------|------|
-| 🪟 **Windows** | [convert-to-webp2-windows.zip](https://github.com/flatwhite-ice/convert-to-webp-v2/raw/main/releases/convert-to-webp2-windows.zip) | 약 58MB |
-| 🍎 **macOS** | [convert-to-webp2-macos.zip](https://github.com/flatwhite-ice/convert-to-webp-v2/raw/main/releases/convert-to-webp2-macos.zip) | 약 82MB |
+| 🪟 **Windows** | [convert-to-webp2-windows.zip](https://github.com/flatwhite-ice/convert-to-webp-v2/raw/main/releases/convert-to-webp2-windows.zip) | 약 57MB |
+| 🍎 **macOS** | [convert-to-webp2-macos.zip](https://github.com/flatwhite-ice/convert-to-webp-v2/raw/main/releases/convert-to-webp2-macos.zip) | 약 81MB |
 
 > 위 링크를 누르면 곧바로 다운로드가 시작됩니다.
 > 저장소에서 직접 받으려면 [`releases/` 폴더](https://github.com/flatwhite-ice/convert-to-webp-v2/tree/main/releases)를 확인하세요.
@@ -66,9 +66,11 @@
 
 #### 🍎 macOS
 1. `convert-to-webp2-macos.zip`의 압축을 풉니다.
-2. 생긴 폴더에서 **`convert-to-webp2`** 실행 파일을 엽니다.
+2. 생긴 `convert-to-webp2-macos` 폴더에서 **`convert-to-webp2`** 실행 파일을 엽니다.
 3. "확인되지 않은 개발자" 경고가 뜨면 → 실행 파일에서 **마우스 우클릭(또는 Control+클릭) → 열기 → 열기** 를 선택합니다.
    *(또는 `시스템 설정 → 개인정보 보호 및 보안`에서 실행을 허용합니다.)*
+
+> ⚠️ `convert-to-webp2` 실행 파일과 `_internal` 폴더는 **항상 같이 있어야** 합니다. 실행 파일만 따로 옮기지 마세요. 폴더째로 옮겨 주세요.
 
 #### 🐧 Linux
 Linux용 사전 빌드본은 제공되지 않습니다. 아래 **방법 B(소스에서 직접 빌드)** 로 만들어 사용하세요. 빌드 후 `dist/convert-to-webp2-linux/` 폴더의 **`convert-to-webp2`** 실행 파일을 실행하면 됩니다. (터미널: `./convert-to-webp2`)
