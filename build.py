@@ -16,7 +16,9 @@ onedir 방식은 자가압축해제가 없어 시작이 빠르고 백신/SmartSc
 
 from __future__ import annotations
 
+import os
 import shutil
+import stat
 import subprocess
 import sys
 from pathlib import Path
@@ -31,6 +33,31 @@ def _platform_tag() -> str:
     if sys.platform == "darwin":
         return "macos"
     return "linux"
+
+
+def _force_rmtree(path: Path) -> None:
+    """shutil.rmtree 가 깨진 심볼릭 링크/reparse point/읽기전용 파일에 막히지 않도록 보강.
+
+    이전 빌드(특히 다른 OS)의 잔재로 dist 폴더에 broken symlink 가 남아 있으면
+    Windows 에서 os.walk 가 WinError 1920 으로 죽는다. onerror 콜백에서 직접
+    unlink/rmdir 로 다시 시도해 강제로 비운다.
+    """
+    def _onerror(func, p, exc_info):
+        try:
+            os.chmod(p, stat.S_IWRITE)
+        except OSError:
+            pass
+        try:
+            os.unlink(p)        # 파일/심볼릭 링크 (깨진 링크 포함)
+            return
+        except (OSError, IsADirectoryError):
+            pass
+        try:
+            os.rmdir(p)         # 비어있는 디렉터리
+        except OSError:
+            pass
+
+    shutil.rmtree(path, onerror=_onerror)
 
 
 def _build_options(root: Path) -> list[str]:
@@ -91,8 +118,9 @@ def main() -> int:
         return 0
 
     # OS 접미사 폴더로 이름 변경 (이전 빌드 잔여물은 제거 후 대체)
-    if final_bundle.exists():
-        shutil.rmtree(final_bundle)
+    # exists() 는 broken symlink 에서 False 를 반환하므로 is_symlink() 도 확인
+    if final_bundle.exists() or final_bundle.is_symlink():
+        _force_rmtree(final_bundle)
     src_bundle.rename(final_bundle)
 
     # dist/convert-to-webp2-<os>/ 폴더를 통째로 zip → 풀면 동일 폴더 구조 유지

@@ -1,0 +1,23 @@
+# PyInstaller 빌드 산출물 (build.py 가 매 실행마다 새로 만든다)
+build/
+dist/
+*.spec
+
+# 릴리스 업로드용 임시 보관소 (GitHub Releases 로 업로드한 뒤 비우면 됨)
+release-artifacts/
+
+# Python 가상환경 / 캐시
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.Python
+
+# 에디터 / OS 메타데이터
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
