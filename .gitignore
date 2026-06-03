@@ -3,8 +3,8 @@ build/
 dist/
 *.spec
 
-# 릴리스 업로드용 임시 보관소 (GitHub Releases 로 업로드한 뒤 비우면 됨)
-release-artifacts/
+# releases/ 는 의도적으로 추적합니다 — README 다운로드 링크가 가리키는 배포 zip 보관소.
+# 새 빌드를 배포하려면 dist/convert-to-webp2-<os>.zip 을 releases/ 로 복사한 뒤 커밋하세요.
 
 # Python 가상환경 / 캐시
 .venv/

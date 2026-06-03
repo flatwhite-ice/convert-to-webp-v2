@@ -47,11 +47,11 @@
 
 | 운영체제 | 다운로드 | 용량 |
 |---------|---------|------|
-| 🪟 **Windows** | [convert-to-webp2-windows.zip](https://github.com/flatwhite-ice/convert-to-webp-v2/releases/latest/download/convert-to-webp2-windows.zip) | 약 58MB |
-| 🍎 **macOS** | [convert-to-webp2-macos.zip](https://github.com/flatwhite-ice/convert-to-webp-v2/releases/latest/download/convert-to-webp2-macos.zip) | 약 82MB |
+| 🪟 **Windows** | [convert-to-webp2-windows.zip](https://github.com/flatwhite-ice/convert-to-webp-v2/raw/main/releases/convert-to-webp2-windows.zip) | 약 58MB |
+| 🍎 **macOS** | [convert-to-webp2-macos.zip](https://github.com/flatwhite-ice/convert-to-webp-v2/raw/main/releases/convert-to-webp2-macos.zip) | 약 82MB |
 
-> 위 링크를 누르면 GitHub Releases 의 **최신 배포본**이 곧바로 다운로드됩니다.
-> 이전 버전 또는 전체 변경 이력을 확인하려면 [Releases 페이지](https://github.com/flatwhite-ice/convert-to-webp-v2/releases)를 방문하세요.
+> 위 링크를 누르면 곧바로 다운로드가 시작됩니다.
+> 저장소에서 직접 받으려면 [`releases/` 폴더](https://github.com/flatwhite-ice/convert-to-webp-v2/tree/main/releases)를 확인하세요.
 
 다운로드한 압축 파일로 실행하는 방법은 아래 OS별 안내를 따르세요.
 
